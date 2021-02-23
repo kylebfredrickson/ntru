@@ -23,26 +23,27 @@ class Polynomial:
     ### Boolean ###
 
     def __eq__(self, other):
-        if type(other) is Polynomial:
-            self._trim()
-            other._trim()
-            return np.array_equal(self.coefficients, other.coefficients)
-        else:
+        if not type(other) is Polynomial:
             raise TypeError("Bad type in __eq__")
+
+        self._trim()
+        other._trim()
+        return np.array_equal(self.coefficients, other.coefficients)
 
     ### Addition ###
 
     def __add__(self, other, mod = None):
-        if type(other) is Polynomial:
-            return self._polynomial_add(other, mod)
-        else:
+        if not type(other) is Polynomial:
             raise TypeError("Bad type in __add__")
 
+        return self._polynomial_add(other, mod)
+
+
     def __sub__(self, other, mod = None):
-        if type(other) is Polynomial:
-            return self.__add__(Polynomial(-1 * other.coefficients), mod)
-        else:
+        if not type(other) is Polynomial:
             raise TypeError("Bad type in __sub__")
+
+        return self.__add__(Polynomial(-1 * other.coefficients), mod)
 
     def _polynomial_add(self, other, mod = None):
         if len(self.coefficients) < len(other.coefficients):
@@ -65,10 +66,10 @@ class Polynomial:
     ### Multiplication ###
 
     def __mul__(self, other, mod = None):
-        if type(other) is Polynomial:
-            return self._polynomial_mul(other, mod)
-        else:
+        if not type(other) is Polynomial:
             raise TypeError("Bad type in __mul__")
+
+        return self._polynomial_mul(other, mod)
 
     def _polynomial_mul(self, other, mod):
         acc = Polynomial([0])
@@ -90,10 +91,10 @@ class Polynomial:
         return self._divide_with_remainder(other, mod)[0]
 
     def __mod__(self, other, mod = None):
-        if type(other) is Polynomial:
-            return self._divide_with_remainder(other, mod)[1]
-        else:
+        if not type(other) is Polynomial:
             raise TypeError("Bad type in __mod__")
+
+        return self._divide_with_remainder(other, mod)[1]
 
     def _divide_with_remainder(self,other, mod = None):
         quotient = Polynomial(0)
@@ -111,9 +112,6 @@ class Polynomial:
 
     # See https://en.wikipedia.org/wiki/Extended_Euclidean_algorithm
     def inverse(self, other, mod = None):
-        if not type(other) is Polynomial:
-            raise TypeError("Bad type in inverse")
-
         t, new_t = Polynomial(0), Polynomial(1)
         r, new_r = Polynomial(other.coefficients), Polynomial(self.coefficients)
 
