@@ -56,6 +56,8 @@ class Polynomial:
 
         if mod != None:
             coeffs %= mod
+            coeffs = np.asarray(coeffs, dtype=int)
+
         p = Polynomial(coeffs)
         p._trim()
         return p
@@ -82,10 +84,10 @@ class Polynomial:
     ### Division ###
 
     def __floordiv__(self, other, mod = None):
-        if type(other) is Polynomial:
-            return self._divide_with_remainder(other, mod)[0]
-        else:
+        if not type(other) is Polynomial:
             raise TypeError("Bad type in __truediv__")
+
+        return self._divide_with_remainder(other, mod)[0]
 
     def __mod__(self, other, mod = None):
         if type(other) is Polynomial:
@@ -109,6 +111,9 @@ class Polynomial:
 
     # See https://en.wikipedia.org/wiki/Extended_Euclidean_algorithm
     def inverse(self, other, mod = None):
+        if not type(other) is Polynomial:
+            raise TypeError("Bad type in inverse")
+
         t, new_t = Polynomial(0), Polynomial(1)
         r, new_r = Polynomial(other.coefficients), Polynomial(self.coefficients)
 
@@ -123,6 +128,14 @@ class Polynomial:
         return t.__mul__(Polynomial(1).__floordiv__(r, mod), mod)
 
     ### Misc. ###
+
+    def center_lift(self, q):
+        center_lift_coeffs = self.coefficients % q
+        center_lift_coeffs = [c if c <= q / 2 else c - q for c in center_lift_coeffs]
+        return Polynomial(center_lift_coeffs)
+
+    def reduce(self, q):
+        self.coefficients = self.coefficients % q
 
     def degree(self):
         nonzero = np.flatnonzero(self.coefficients)
@@ -140,7 +153,7 @@ class Polynomial:
             self.coefficients = np.zeros(1)
 
     def __str__(self):
-        coeff_vars = [str(self.coefficients[i]) + "x^" + str(i) for i in range(len(self.coefficients))]
+        coeff_vars = [str(self.coefficients[i]) + "x^" + str(i) for i in range(len(self.coefficients)) if self.coefficients[i] != 0]
         coeff_vars.reverse()
         return " + ".join(coeff_vars)
 
@@ -165,7 +178,7 @@ def main():
     a = Polynomial([-1, 0, 1, 1, -1, 0, 1])
     b = Polynomial([-1, 0, 0, 0, 0, 0, 0, 1])
     print("Inverses w.r.t Polynomials")
-    print("Inv: " + str(a) + " w.r.t. " + str(b) + " mod 3 = " + str(a.inverse(b, 3)))
+    print("Inv: " + str(a) + " w.r.t. " + str(b) + " mod 3 = " + str(a.inverse(b, 41)))
 
 if (__name__ == "__main__"):
     main()
