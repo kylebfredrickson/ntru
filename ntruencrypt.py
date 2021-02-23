@@ -65,7 +65,6 @@ class NTRUEncrypt:
             except:
                 print("Inverses of f do not exist. Choosing a new key.")
                 f = uniform_sample_T(self.N, self.d + 1, self.d)
-                g = uniform_sample_T(self.N, self.d, self.d)
 
     def set_pub_key(self, h):
         self.h = h
