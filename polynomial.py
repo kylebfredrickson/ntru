@@ -1,6 +1,9 @@
 import numpy as np
 
 def inv(a, mod):
+    """
+    Computes the inverse of a as 1/a if no modulus is provided, or finds  a^-1 wrt Z_mod
+    """
     if mod == None:
         return 1 / a
     elif a == int(a):
@@ -12,6 +15,38 @@ def inv(a, mod):
         raise TypeError("Tried to take find inverse of a float mod " + str(mod))
 
 class Polynomial:
+    """
+    A class implementing polynomial operations.
+    The polynomial is represented as a numpy array where a[i] corresponds to c_i * x^i (i.e a[0] is the constant term).
+    Operations:
+
+    + : Polynomial x Polynomial -> Polynomial
+    Normal polynomial addition (optionally mod p)
+
+    - : Polynomial x Polynomial -> Polynomial
+    Normal polynomial subtraction (optionally mod p)
+
+    * : Polynomial x Polynomial -> Polynomial
+    Normal polynomial multiplication (optionally mod p)
+
+    // : Polynomial x Polynomial -> Polynomial
+    Floor polynomial division (optionally mod p)
+    return q, where q*b + r = a, for polynomials a,b,r, with deg(r) < deg(a)
+
+    % : Polynomial x Polynomial -> Polynomial
+    Polynomial remainder (optionally mod p)
+    return r, where q*b + r = a, for polynomials a,b,r, with deg(r) < deg(a)
+
+    inverse : Polynomial x Polynomial -> Polynomial?
+    Polynomial inverse (optionally mod p)
+    returns a^-1 s.t. a * a mod p = 1
+
+    center_lift : Polynomial x Int -> Polynomial
+    Returns the center lift of a polynomial a mod p.
+
+    degree : Polynomial -> Int
+    Returns i s.t. c_i != 0 and i >= i'
+    """
     def __init__(self, coefficients = None):
         if coefficients is None:
             self.coefficients = np.zeros(1)
@@ -180,4 +215,3 @@ def main():
 
 if (__name__ == "__main__"):
     main()
-

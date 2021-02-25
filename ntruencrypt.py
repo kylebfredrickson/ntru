@@ -96,19 +96,43 @@ class NTRUEncrypt:
 
 
 def main():
-    dec = NTRUEncrypt(7, 3, 41)
-    enc = NTRUEncrypt(7, 3, 41)
+    dec = NTRUEncrypt(251, 3, 257, 5)
+    enc = NTRUEncrypt(251, 3, 257, 5)
 
-    # f = Polynomial([-1, 0, 1, 1, -1, 0, 1])
-    # g = Polynomial([0, -1, -1, 0, 1, 0, 1])
-    f = None
-    g = None
+    f_coeffs = np.zeros(252)
+    f_coeffs[251] = 1
+    f_coeffs[249] = 1
+    f_coeffs[211] = 1
+    f_coeffs[188] = 1
+    f_coeffs[134] = -1
+    f_coeffs[107] = 1
+    f_coeffs[57] = 1
+    f_coeffs[46] = -1
+    f_coeffs[44] = -1
+    f_coeffs[8] = -1
+    f_coeffs[2] = -1
+    f = Polynomial(f_coeffs)
+
+    g_coeffs = np.zeros(252)
+    g_coeffs[229] = 1
+    g_coeffs[192] = -1
+    g_coeffs[181] = 1
+    g_coeffs[128] = -1
+    g_coeffs[103] = 1
+    g_coeffs[92] = -1
+    g_coeffs[88] = 1
+    g_coeffs[74] = -1
+    g_coeffs[33] = 1
+    g_coeffs[29] = -1
+    g = Polynomial(g_coeffs)
+
     dec.key_gen(f, g)
 
     enc.set_pub_key(dec.get_pub_key())
+    # m = Polynomial([1, -1, 1, 1, 0, -1])
     m = Polynomial([1, -1, 1, 1, 0, -1])
     # r = Polynomial([-1, 1, 0, 0, 0, -1, 1])
-    r = None
+    r = Polynomial([1,1,1,1])
     e = enc.encrypt(m, r)
 
     m1 = dec.decrypt(m)
